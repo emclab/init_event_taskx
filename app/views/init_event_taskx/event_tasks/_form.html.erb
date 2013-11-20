@@ -1,3 +1,7 @@
+<% if false %>
+  <%= render inline: ERB.new(@erb_code).result(binding) %>
+  
+<% else %>
 <%= simple_form_for @event_task do |f| %>    
 	  <%= f.input :name, :label => t('Task Name') %>  
 	  <%= f.input :description, :label => t('Description'), :input_html => {:rows => 4} %>
@@ -34,5 +38,8 @@
       <% end %>
       <%= f.input :requested_by_noupdate, :label => t('Requested_by'), :readonly => true, :required => false, :input_html => {:value => @event_task.requested_by.name} %>
 	  
+	  <%= link_to t('Back'), SUBURI + "/authentify/view_handler?index=0", :class => BUTTONS_CLS['action'] %>
 	  <%= f.button :submit, t('Save'), :class => BUTTONS_CLS['action'] %>  
-<% end %>  
+<% end %> 
+
+<% end %> 
