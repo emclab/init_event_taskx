@@ -9,14 +9,14 @@ module InitEventTaskx
       @event_tasks = params[:init_event_taskx_event_tasks][:model_ar_r]  #returned by check_access_right
       @event_tasks = @event_tasks.where('TRIM(init_event_taskx_event_tasks.task_category) = ?', params[:task_category].strip) if params[:task_category].present?
       @event_tasks = @event_tasks.page(params[:page]).per_page(@max_pagination) 
-      @erb_code = find_config_const('init_event_task_index_view', 'init_event_taskx_event_tasks')
+      @erb_code = find_config_const('init_event_task_index_view', 'init_event_taskx')
     end
   
     def new
       @title = t('New Event Task')
       @event_task = InitEventTaskx::EventTask.new()
       @task_category = params[:task_category].strip if params[:task_category].present?
-      @erb_code = find_config_const('init_event_task_new_view', 'init_event_taskx_event_tasks')
+      @erb_code = find_config_const('init_event_task_new_view', 'init_event_taskx')
     end
   
     def create
@@ -27,6 +27,7 @@ module InitEventTaskx
         redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Saved!")
       else
         @task_category = params[:event_task][:task_category].strip if params[:event_task].present? && params[:event_task][:task_category].present?
+        @erb_code = find_config_const('init_event_task_new_view', 'init_event_taskx')
         flash[:notice] = t('Data Error. Not Saved!')
         render 'new'
       end
@@ -35,7 +36,7 @@ module InitEventTaskx
     def edit
       @title = t('Update Event Task')
       @event_task = InitEventTaskx::EventTask.find_by_id(params[:id])
-      @erb_code = find_config_const('init_event_task_edit_view', 'init_event_taskx_event_tasks')
+      @erb_code = find_config_const('init_event_task_edit_view', 'init_event_taskx')
     end
   
     def update
@@ -44,6 +45,7 @@ module InitEventTaskx
       if @event_task.update_attributes(params[:event_task], :as => :role_update)
         redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Updated!")
       else
+        @erb_code = find_config_const('init_event_task_edit_view', 'init_event_taskx')
         flash[:notice] = t('Data Error. Not Updated!')
         render 'edit'
       end
