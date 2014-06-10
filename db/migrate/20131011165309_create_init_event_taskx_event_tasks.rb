@@ -1,7 +1,7 @@
 class CreateInitEventTaskxEventTasks < ActiveRecord::Migration
   def change
     create_table :init_event_taskx_event_tasks do |t|
-      t.string :wfid
+      t.string :wf_state
       t.string :task_category
       t.string :name
       t.text :instruction
@@ -20,6 +20,6 @@ class CreateInitEventTaskxEventTasks < ActiveRecord::Migration
     end
     
     add_index :init_event_taskx_event_tasks, :task_category
-    add_index :init_event_taskx_event_tasks, :wfid
+    add_index :init_event_taskx_event_tasks, :wf_state
   end
 end

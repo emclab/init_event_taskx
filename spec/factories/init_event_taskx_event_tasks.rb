@@ -2,7 +2,6 @@
 
 FactoryGirl.define do
   factory :init_event_taskx_event_task, :class => 'InitEventTaskx::EventTask' do
-    wfid "MyString"
     task_category "MyString"
     name "MyString"
     instruction "MyText"

@@ -15,5 +15,11 @@ module InitEventTaskx
     belongs_to :task_status, :class_name => 'Commonx::MiscDefinition' 
     
     validates_presence_of :name 
+    validate :dynamic_validate
+    
+    def dynamic_validate
+      wf = Authentify::AuthentifyUtility.find_config_const('dynamic_validate', 'init_event_taskx')
+      eval(wf) if wf.present?
+    end
   end
 end
