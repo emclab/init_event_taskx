@@ -23,8 +23,8 @@
 		  	<td><%= r.name %></td>
 			<td><%= prt(r, :description) %></td>
 			<td><%= prt(r, :instruction) %></td>
-			<td><%= r.start_date.strftime("%Y/%m/%d") %></td>
-			<td><%= r.finish_date.strftime("%Y/%m/%d") %></td>
+			<td><%= r.start_date.strftime("%Y/%m/%d") if r.start_date.present? %></td>
+			<td><%= r.finish_date.strftime("%Y/%m/%d") if r.finish_date.present? %></td>
 			<td><%= t(prt(r, :expedite).to_s) %></td>
 			<td><%= t(prt(r, :cancelled).to_s) %></td>
 			<td><%= t(prt(r, :completed).to_s) %></td>
@@ -39,8 +39,9 @@
 	<table class="table table-striped">
 	  <tr>
 	    <th>
-	    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	    	<%= link_to t('Back'), SUBURI + "/authentify/view_handler?index=0", :class => BUTTONS_CLS['action']  %>
+	    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	    	<%= link_to t('New Task'), SUBURI + "/authentify/view_handler?index=1&url=#{new_event_task_path}", :class => BUTTONS_CLS['action']  if has_action_right?('create', params[:controller]) %>
 	    </th>
 	  </tr>
 	</table>

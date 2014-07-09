@@ -44,18 +44,19 @@ describe "LinkTests" do
         :sql_code => "")
         
       @task_sta = FactoryGirl.create(:commonx_misc_definition, 'for_which' => 'task_status')  
-      task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production', :executioner_id => @u.id)
+      #task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production', :executioner_id => @u.id)
         
             
       visit '/'
       #save_and_open_page
       fill_in "login", :with => @u.login
-      fill_in "password", :with => 'password'
+      fill_in "password", :with => @u.password
       click_button 'Login'
     end
     
     it "works! (now write some real specs)" do
-      # Run the generator again with the --webrat flag if you want to use webrat methods/matchers
+      task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id,  :task_category => 'production', 
+                                 :executioner_id => @u.id)
       visit event_tasks_path
       #save_and_open_page
       page.body.should have_content('Tasks')
@@ -63,13 +64,44 @@ describe "LinkTests" do
       #save_and_open_page
       visit new_event_task_path
       #save_and_open_page
-      task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id,  :task_category => 'production', 
-                                 :executioner_id => @u.id)
+      
       visit event_task_path(task1) #, :parent_record_id => task1.resource_id, :parent_resource => task1.resource_string)
       #save_and_open_page
       click_link('New Log')
       #save_and_open_page
       page.body.should have_content('Log')
+      
+      #edit
+      visit event_tasks_path
+      click_link('Edit')
+      fill_in 'event_task_name', :with => 'changed name'
+      click_button 'Save'
+      visit event_tasks_path
+      page.should have_content('changed name')
+      #bad data
+      visit event_tasks_path
+      click_link('Edit')
+      fill_in 'event_task_name', :with => ''
+      fill_in 'event_task_description', :with => 'changed task desp'
+      click_button 'Save'
+      visit event_tasks_path
+      page.should_not have_content('changed task desp')
+      
+      #new
+      visit event_tasks_path
+      click_link('New Task')
+      fill_in 'event_task_name', :with => 'new task name'
+      click_button 'Save'
+      visit event_tasks_path
+      page.should have_content('new task name')
+      #bad new data
+      click_link('New Task')
+      fill_in 'event_task_name', :with => ''
+      fill_in 'event_task_description', :with => 'new & new task desp'
+      click_button 'Save'
+      visit event_tasks_path
+      page.should_not have_content('new & new task desp')
+      
     end
   end
 end
