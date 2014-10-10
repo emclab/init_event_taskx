@@ -3,11 +3,12 @@ require_dependency "init_event_taskx/application_controller"
 module InitEventTaskx
   class EventTasksController < ApplicationController
     before_filter :require_employee
+    before_filter :load_params
         
     def index
       @title = t('Event Tasks')
       @event_tasks = params[:init_event_taskx_event_tasks][:model_ar_r]  #returned by check_access_right
-      @event_tasks = @event_tasks.where('TRIM(init_event_taskx_event_tasks.task_category) = ?', params[:task_category].strip) if params[:task_category].present?
+      @event_tasks = @event_tasks.where('TRIM(init_event_taskx_event_tasks.task_category) = ?', @task_category) if @task_category
       @event_tasks = @event_tasks.page(params[:page]).per_page(@max_pagination) 
       @erb_code = find_config_const('event_task_index_view', 'init_event_taskx')
     end
@@ -15,7 +16,7 @@ module InitEventTaskx
     def new
       @title = t('New Event Task')
       @event_task = InitEventTaskx::EventTask.new()
-      @task_category = params[:task_category].strip if params[:task_category].present?
+      #@task_category = params[:task_category].strip if params[:task_category].present?
       @erb_code = find_config_const('event_task_new_view', 'init_event_taskx')
     end
   
@@ -57,5 +58,9 @@ module InitEventTaskx
       @erb_code = find_config_const('event_task_show_view', 'init_event_taskx_event_tasks')
     end
     
+    protected
+    def load_params
+      @task_category = params[:task_category].strip if params[:task_category].present?
+    end
   end
 end
