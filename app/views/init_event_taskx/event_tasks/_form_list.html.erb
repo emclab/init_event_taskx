@@ -31,7 +31,7 @@
 			<td><%= prt(r, 'executioner.name') if r.executioner_id.present? %></td> 
 			<td><%= prt(r, 'requested_by.name') %></td> 
 			<td><%= prt(r, 'last_updated_by.name') %></td>    
-			<td><%= link_to t('Edit'), SUBURI + "/authentify/view_handler?index=1&url=#{edit_event_task_path(r)}", :class => BUTTONS_CLS['action']  if has_action_right?('update', params[:controller], r) %></td>
+			<td><%= link_to t('Edit'), SUBURI + "/authentify/view_handler?index=1&url=#{CGI.escape edit_event_task_path(r, :subaction => @task_category)}", :class => BUTTONS_CLS['action']  if @task_category && has_action_right?('update_' + @task_category, params[:controller], r) %></td>
 		  </tr>
 		<% end %>
 	</table>
@@ -41,7 +41,7 @@
 	    <th>
 	    	<%= link_to t('Back'), SUBURI + "/authentify/view_handler?index=0", :class => BUTTONS_CLS['action']  %>
 	    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	    	<%= link_to t('New Task'), SUBURI + "/authentify/view_handler?index=1&url=#{new_event_task_path}", :class => BUTTONS_CLS['action']  if has_action_right?('create', params[:controller]) %>
+	    	<%= link_to t('New Task'), SUBURI + "/authentify/view_handler?index=1&url=#{CGI.escape new_event_task_path(:task_category => @task_category, :subaction => @task_category)}", :class => BUTTONS_CLS['action']  if @task_category && has_action_right?('create_' + @task_category, params[:controller]) %>
 	    </th>
 	  </tr>
 	</table>

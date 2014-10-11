@@ -29,8 +29,8 @@ module InitEventTaskx
         :sql_code => "InitEventTaskx::EventTask.where(:cancelled => false).order('created_at DESC')")
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
-        task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id)
-        task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => 'a new task')
+        task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'test')
+        task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => 'a new task', :task_category => 'test')
         get 'index', {:use_route => :init_event_taskx}
         assigns[:event_tasks].should =~ [task, task1]
       end
@@ -41,7 +41,7 @@ module InitEventTaskx
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production')
-        task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => 'a new task')
+        task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => 'a new task', :task_category => 'test')
         get 'index', {:use_route => :init_event_taskx, :task_category => 'production'}
         assigns[:event_tasks].should =~ [task]
       end

@@ -14,7 +14,7 @@ module InitEventTaskx
     belongs_to :executioner, :class_name => 'Authentify::User'
     belongs_to :task_status, :class_name => 'Commonx::MiscDefinition' 
     
-    validates_presence_of :name 
+    validates_presence_of :name, :task_category 
     validate :dynamic_validate
     
     def dynamic_validate

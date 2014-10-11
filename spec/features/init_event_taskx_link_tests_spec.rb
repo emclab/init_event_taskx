@@ -36,7 +36,11 @@ describe "LinkTests" do
            :sql_code => "InitEventTaskx::EventTask.where(:cancelled => false).order('created_at DESC')")
       ua1 = FactoryGirl.create(:user_access, :action => 'create', :resource => 'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
            :sql_code => "")
+      ua1 = FactoryGirl.create(:user_access, :action => 'create_production', :resource => 'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
+           :sql_code => "")
       ua1 = FactoryGirl.create(:user_access, :action => 'update', :resource => 'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
+           :sql_code => "")
+      ua1 = FactoryGirl.create(:user_access, :action => 'update_production', :resource => 'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
            :sql_code => "")
       user_access = FactoryGirl.create(:user_access, :action => 'show', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "record.executioner_id == session[:user_id]")
@@ -57,7 +61,7 @@ describe "LinkTests" do
     it "works! (now write some real specs)" do
       task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id,  :task_category => 'production', 
                                  :executioner_id => @u.id)
-      visit event_tasks_path
+      visit event_tasks_path(:task_category => 'production')
       #save_and_open_page
       page.body.should have_content('Tasks')
       click_link('Edit')
@@ -72,14 +76,14 @@ describe "LinkTests" do
       page.body.should have_content('Log')
       
       #edit
-      visit event_tasks_path
+      visit event_tasks_path(:task_category => 'production')
       click_link('Edit')
       fill_in 'event_task_name', :with => 'changed name'
       click_button 'Save'
       visit event_tasks_path
       page.should have_content('changed name')
       #bad data
-      visit event_tasks_path
+      visit event_tasks_path(:task_category => 'production')
       click_link('Edit')
       fill_in 'event_task_name', :with => ''
       fill_in 'event_task_description', :with => 'changed task desp'
@@ -88,13 +92,17 @@ describe "LinkTests" do
       page.should_not have_content('changed task desp')
       
       #new
-      visit event_tasks_path
+      visit event_tasks_path(:task_category => 'production')
+      save_and_open_page
       click_link('New Task')
+      save_and_open_page
       fill_in 'event_task_name', :with => 'new task name'
       click_button 'Save'
       visit event_tasks_path
+      save_and_open_page
       page.should have_content('new task name')
       #bad new data
+      visit event_tasks_path(:task_category => 'production')
       click_link('New Task')
       fill_in 'event_task_name', :with => ''
       fill_in 'event_task_description', :with => 'new & new task desp'
