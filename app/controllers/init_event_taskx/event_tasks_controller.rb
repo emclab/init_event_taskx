@@ -55,7 +55,7 @@ module InitEventTaskx
     def show
       @title = t('Show Event Task')
       @event_task = InitEventTaskx::EventTask.find_by_id(params[:id])
-      @erb_code = find_config_const('event_task_show_view', 'init_event_taskx_event_tasks')
+      @erb_code = find_config_const('event_task_show_view', 'init_event_taskx')
     end
     
     protected
