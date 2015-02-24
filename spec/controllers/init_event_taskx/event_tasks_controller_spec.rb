@@ -1,10 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module InitEventTaskx
-  describe EventTasksController do
+  RSpec.describe EventTasksController, type: :controller do
+    routes {InitEventTaskx::Engine.routes}
     before(:each) do
-      controller.should_receive(:require_signin)
-      controller.should_receive(:require_employee)
+      expect(controller).to receive(:require_signin)
+      expect(controller).to receive(:require_employee)
       @pagination_config = FactoryGirl.create(:engine_config, :engine_name => nil, :engine_version => nil, :argument_name => 'pagination', :argument_value => 30)
       
     end
@@ -32,7 +33,7 @@ module InitEventTaskx
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'test')
         task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => 'a new task', :task_category => 'test')
         get 'index', {:use_route => :init_event_taskx}
-        assigns[:event_tasks].should =~ [task, task1]
+        expect(assigns(:event_tasks)).to match_array([task, task1])
       end
       
       it "should return the task for the task_category" do
@@ -42,8 +43,8 @@ module InitEventTaskx
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production')
         task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => 'a new task', :task_category => 'test')
-        get 'index', {:use_route => :init_event_taskx, :task_category => 'production'}
-        assigns[:event_tasks].should =~ [task]
+        get 'index', {:task_category => 'production'}
+        expect(assigns(:event_tasks)).to match_array([task])
       end
     end
   
@@ -53,9 +54,9 @@ module InitEventTaskx
         :sql_code => "")
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
-        get 'new', {:use_route => :init_event_taskx, :task_category => 'production', :resource_id => 100, :resource_string => 'event_taskx/event_tasks'}
-        response.should be_success
-        assigns[:task_category].should eq('production')
+        get 'new', {:task_category => 'production', :resource_id => 100, :resource_string => 'event_taskx/event_tasks'}
+        expect(response).to be_success
+        expect(assigns[:task_category]).to eq('production')
       end
       
       it "should bring up new page without task_category" do        
@@ -63,8 +64,8 @@ module InitEventTaskx
         :sql_code => "")
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
-        get 'new', {:use_route => :init_event_taskx, :resource_id => 100, :resource_string => 'event_taskx/event_tasks'}
-        response.should be_success
+        get 'new', {:resource_id => 100, :resource_string => 'event_taskx/event_tasks'}
+        expect(response).to be_success
          
       end
     end
@@ -76,8 +77,8 @@ module InitEventTaskx
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.attributes_for(:init_event_taskx_event_task, :task_status_id => @task_sta.id )  
-        get 'create', {:use_route => :init_event_taskx, :event_task => task}
-        response.should redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Saved!")
+        get 'create', {:event_task => task}
+        expect(response).to redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Saved!")
       end
       
       it "should render 'new' if data error" do        
@@ -86,8 +87,8 @@ module InitEventTaskx
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.attributes_for(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => nil)
-        get 'create', {:use_route => :init_event_taskx, :event_task => task}
-        response.should render_template('new')
+        get 'create', {:event_task => task}
+        expect(response).to render_template('new')
       end
     end
   
@@ -98,8 +99,8 @@ module InitEventTaskx
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production')
-        get 'edit', {:use_route => :init_event_taskx, :id => task.id}
-        response.should be_success
+        get 'edit', {:id => task.id}
+        expect(response).to be_success
       end
     end
   
@@ -110,8 +111,8 @@ module InitEventTaskx
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production')
-        get 'update', {:use_route => :init_event_taskx, :id => task.id, :event_task => {:name => 'new name'}}
-        response.should redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Updated!")
+        get 'update', {:id => task.id, :event_task => {:name => 'new name'}}
+        expect(response).to redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Updated!")
       end
       
       it "should render edit with data error" do
@@ -120,8 +121,8 @@ module InitEventTaskx
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production')
-        get 'update', {:use_route => :init_event_taskx, :id => task.id, :event_task => {:name => ''}}
-        response.should render_template('edit')
+        get 'update', {:id => task.id, :event_task => {:name => ''}}
+        expect(response).to render_template('edit')
       end
     end
   
@@ -132,8 +133,8 @@ module InitEventTaskx
         session[:user_id] = @u.id
         session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production', :executioner_id => @u.id)
-        get 'show', {:use_route => task.id, :id => task.id}
-        response.should be_success
+        get 'show', {:id => task.id}
+        expect(response).to be_success
       end
     end
   

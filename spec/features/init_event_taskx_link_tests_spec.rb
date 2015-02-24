@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe "LinkTests" do
+RSpec.describe "LinkTests", type: :request do
   describe "GET /init_event_taskx_link_tests" do
     mini_btn = 'btn btn-mini '
     ActionView::CompiledTemplates::BUTTONS_CLS =
@@ -61,54 +61,54 @@ describe "LinkTests" do
     it "works! (now write some real specs)" do
       task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id,  :task_category => 'production', 
                                  :executioner_id => @u.id)
-      visit event_tasks_path(:task_category => 'production')
+      visit init_event_taskx.event_tasks_path(:task_category => 'production')
       #save_and_open_page
-      page.body.should have_content('Tasks')
+      expect(page).to have_content('Tasks')
       click_link('Edit')
       #save_and_open_page
-      visit new_event_task_path
+      visit init_event_taskx.new_event_task_path
       #save_and_open_page
       
-      visit event_task_path(task1) #, :parent_record_id => task1.resource_id, :parent_resource => task1.resource_string)
+      visit init_event_taskx.event_task_path(task1) #, :parent_record_id => task1.resource_id, :parent_resource => task1.resource_string)
       #save_and_open_page
       click_link('New Log')
       #save_and_open_page
-      page.body.should have_content('Log')
+      expect(page).to have_content('Log')
       
       #edit
-      visit event_tasks_path(:task_category => 'production')
+      visit init_event_taskx.event_tasks_path(:task_category => 'production')
       click_link('Edit')
       fill_in 'event_task_name', :with => 'changed name'
       click_button 'Save'
-      visit event_tasks_path
-      page.should have_content('changed name')
+      visit init_event_taskx.event_tasks_path
+      expect(page).to have_content('changed name')
       #bad data
-      visit event_tasks_path(:task_category => 'production')
+      visit init_event_taskx.event_tasks_path(:task_category => 'production')
       click_link('Edit')
       fill_in 'event_task_name', :with => ''
       fill_in 'event_task_description', :with => 'changed task desp'
       click_button 'Save'
-      visit event_tasks_path
-      page.should_not have_content('changed task desp')
+      visit init_event_taskx.event_tasks_path
+      expect(page).to_not have_content('changed task desp')
       
       #new
-      visit event_tasks_path(:task_category => 'production')
+      visit init_event_taskx.event_tasks_path(:task_category => 'production')
       save_and_open_page
       click_link('New Task')
-      save_and_open_page
+      #save_and_open_page
       fill_in 'event_task_name', :with => 'new task name'
       click_button 'Save'
-      visit event_tasks_path
+      visit init_event_taskx.event_tasks_path
       save_and_open_page
-      page.should have_content('new task name')
+      expect(page).to have_content('new task name')
       #bad new data
-      visit event_tasks_path(:task_category => 'production')
+      visit init_event_taskx.event_tasks_path(:task_category => 'production')
       click_link('New Task')
       fill_in 'event_task_name', :with => ''
       fill_in 'event_task_description', :with => 'new & new task desp'
       click_button 'Save'
-      visit event_tasks_path
-      page.should_not have_content('new & new task desp')
+      visit init_event_taskx.event_tasks_path
+      expect(page).not_to have_content('new & new task desp')
       
     end
   end

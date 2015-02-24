@@ -1,20 +1,20 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module InitEventTaskx
-  describe EventTask do
+  RSpec.describe EventTask, type: :model do
     it "should be OK" do
       c = FactoryGirl.build(:init_event_taskx_event_task)
-      c.should be_valid
+      expect(c).to be_valid
     end
     
     it "should reject nil name" do
       c = FactoryGirl.build(:init_event_taskx_event_task, :name => nil)
-      c.should_not be_valid
+      expect(c).not_to be_valid
     end
     
     it "should reject nil task category" do
       c = FactoryGirl.build(:init_event_taskx_event_task, :task_category => nil)
-      c.should_not be_valid
+      expect(c).not_to be_valid
     end
   end
 end
