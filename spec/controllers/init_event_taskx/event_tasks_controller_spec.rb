@@ -20,6 +20,8 @@ module InitEventTaskx
       @u = FactoryGirl.create(:user, :user_levels => [ul], :user_roles => [ur])
       
       @task_sta = FactoryGirl.create(:commonx_misc_definition, 'for_which' => 'task_status')  
+      
+      session[:user_role_ids] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id).user_role_ids
     end
     
     render_views
@@ -29,10 +31,9 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'index', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "InitEventTaskx::EventTask.where(:cancelled => false).order('created_at DESC')")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'test')
         task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => 'a new task', :task_category => 'test')
-        get 'index', {:use_route => :init_event_taskx}
+        get 'index'
         expect(assigns(:event_tasks)).to match_array([task, task1])
       end
       
@@ -40,7 +41,6 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'index', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "InitEventTaskx::EventTask.where(:cancelled => false).order('created_at DESC')")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production')
         task1 = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => 'a new task', :task_category => 'test')
         get 'index', {:task_category => 'production'}
@@ -53,7 +53,6 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'create', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         get 'new', {:task_category => 'production', :resource_id => 100, :resource_string => 'event_taskx/event_tasks'}
         expect(response).to be_success
         expect(assigns[:task_category]).to eq('production')
@@ -63,7 +62,6 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'create', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         get 'new', {:resource_id => 100, :resource_string => 'event_taskx/event_tasks'}
         expect(response).to be_success
          
@@ -75,7 +73,6 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'create', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.attributes_for(:init_event_taskx_event_task, :task_status_id => @task_sta.id )  
         get 'create', {:event_task => task}
         expect(response).to redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Saved!")
@@ -85,7 +82,6 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'create', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.attributes_for(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :name => nil)
         get 'create', {:event_task => task}
         expect(response).to render_template('new')
@@ -97,7 +93,6 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'update', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production')
         get 'edit', {:id => task.id}
         expect(response).to be_success
@@ -109,7 +104,6 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'update', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production')
         get 'update', {:id => task.id, :event_task => {:name => 'new name'}}
         expect(response).to redirect_to URI.escape(SUBURI + "/authentify/view_handler?index=0&msg=Successfully Updated!")
@@ -119,7 +113,6 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'update', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production')
         get 'update', {:id => task.id, :event_task => {:name => ''}}
         expect(response).to render_template('edit')
@@ -131,7 +124,6 @@ module InitEventTaskx
         user_access = FactoryGirl.create(:user_access, :action => 'show', :resource =>'init_event_taskx_event_tasks', :role_definition_id => @role.id, :rank => 1,
         :sql_code => "record.executioner_id == session[:user_id]")
         session[:user_id] = @u.id
-        session[:user_privilege] = Authentify::UserPrivilegeHelper::UserPrivilege.new(@u.id)
         task = FactoryGirl.create(:init_event_taskx_event_task, :task_status_id => @task_sta.id, :task_category => 'production', :executioner_id => @u.id)
         get 'show', {:id => task.id}
         expect(response).to be_success

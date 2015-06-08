@@ -2,7 +2,7 @@
   <%= render inline: ERB.new(@erb_code).result(binding) %>
   
 <% else %>
-<div id="main_body">
+
 <h4><%=t('Task Info') %></h4>
 
 <p>
@@ -77,6 +77,6 @@
      </tr>
   </table>  
   	
-</div>
+
 
 <% end %>
