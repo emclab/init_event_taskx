@@ -7,11 +7,11 @@ require "init_event_taskx/version"
 Gem::Specification.new do |s|
   s.name        = "init_event_taskx"
   s.version     = InitEventTaskx::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of InitEventTaskx."
-  s.description = "TODO: Description of InitEventTaskx."
+  s.authors     = ["Your name"]
+  s.email       = ["Your email"]
+  s.homepage    = "http://home.com"
+  s.summary     = "Summary of InitEventTaskx."
+  s.description = "Description of InitEventTaskx."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
